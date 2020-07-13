@@ -34,20 +34,29 @@ OLD Docs!!!
     f = tp.Round(5.867868, 2) //5.86
 - SaveStruct и LoadStruct - Сохранение и загрузка структуры из Json
 
-## Installation
-
-The minimum requirement of Go is **1.6**.
-
-To use with latest changes:
-
 ```sh
 $ go get github.com/xela07ax/toolPack
 ```
-```
+
 
 Please add `-u` flag to update in the future.
 
 ## Getting Help
+## Примеры
+
+```go
+		var err error
+			we,err = wb.FindElement(selenium.ByID, "lookup_page1_tbod-tbd")
+		if err != nil {
+			return true,nil
+		}
+		f,_ := tp.OpenWriteFile("file.png")
+		bt, _ := we.Screenshot(false)
+		f.Write(bt)
+		we,err = wb.FindElement(selenium.ByID, "#lookup_page1_tbod-tbd tbody tr")
+		fmt.Println("Полле региона click")
+			we.Screenshot(false)
+		we.Click()
 
 ## License
 
