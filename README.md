@@ -42,9 +42,13 @@ $ go get github.com/xela07ax/toolPack
 Please add `-u` flag to update in the future.
 
 ## Getting Help
-## Примеры
+# Примеры
 
 ```go
+import (
+	"github.com/tebeka/selenium"
+    "github.com/xela07ax/toolsXela/tp"
+)
 		var err error
 			we,err = wb.FindElement(selenium.ByID, "lookup_page1_tbod-tbd")
 		if err != nil {
@@ -54,7 +58,6 @@ Please add `-u` flag to update in the future.
 		bt, _ := we.Screenshot(false)
 		f.Write(bt)
 		we,err = wb.FindElement(selenium.ByID, "#lookup_page1_tbod-tbd tbody tr")
-		fmt.Println("Полле региона click")
 			we.Screenshot(false)
 		we.Click()
 
