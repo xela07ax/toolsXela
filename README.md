@@ -47,19 +47,14 @@ Please add `-u` flag to update in the future.
 ```go
 import (
 	"github.com/tebeka/selenium"
-    "github.com/xela07ax/toolsXela/tp"
-)
+	"github.com/xela07ax/toolsXela/tp"
+	)
 		var err error
-			we,err = wb.FindElement(selenium.ByID, "lookup_page1_tbod-tbd")
-		if err != nil {
-			return true,nil
-		}
+		we,err = wb.FindElement(selenium.ByID, "lookup_page1_tbod-tbd")
+		if err != nil {return true,nil}
+		bt, _ := we.Screenshot(true)	
 		f,_ := tp.OpenWriteFile("file.png")
-		bt, _ := we.Screenshot(false)
 		f.Write(bt)
-		we,err = wb.FindElement(selenium.ByID, "#lookup_page1_tbod-tbd tbody tr")
-			we.Screenshot(false)
-		we.Click()
 
 ## License
 
