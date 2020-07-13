@@ -1,0 +1,9 @@
+
+1.2 add Rx (29Sep2019)
+1.3 add Rx (02Oct2019)
+add CmdConveer
+add tp.Exit func
+edit tp.logger print error from stderr
+add Lego
+1.4 Add Web module Httpjson()
+add encode IntToBytes()
