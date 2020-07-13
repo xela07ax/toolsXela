@@ -55,7 +55,62 @@ import (
 		bt, _ := we.Screenshot(true)	
 		f,_ := tp.OpenWriteFile("file.png")
 		f.Write(bt)
+```
+```go
+package main
 
+import (
+	"../../lib/toolsXela/tp"
+	"../../model"
+	"encoding/json"
+	"fmt"
+	"path/filepath"
+)
+type DictRoles struct {
+	Chat       string
+	Dispatcher string
+	Operator   string
+	Dashboard  string
+}
+type Conf struct {
+	Name int // Порт программы
+	Roles DictRoles
+	datail map[int]string
+}
+
+func main()  {
+	dir, err := tp.BinDir()
+	tp.Fck(err)
+	// Открываем конфиг
+	var config model.Config
+	configDir := filepath.Join(dir,"config.json")
+	fi,err := tp.OpenReadFile(configDir)
+	if err != nil {
+		fmt.Printf("Ошибка при открытии конфигурации %s: %s\n",configDir,err)
+		tp.ExitWithSecTimeout(1)
+	}
+	err = json.Unmarshal(fi,&config)
+	if err != nil {
+		fmt.Printf("Ошибка чтения JSON %s: %s\n",configDir,err)
+		tp.ExitWithSecTimeout(1)
+	}
+	fmt.Println(config)
+	dat := Conf{
+		Name:  453,
+		Roles: DictRoles{
+			Chat:       "Привет",
+			Dispatcher: "мой",
+			Operator:   "прекрвсный",
+			Dashboard:  "мир",
+		},
+	}
+	raw, _ := json.Marshal(dat)
+	fFunc, err := tp.OpenWriteFile(filepath.Join(dir,"tstConfig.json"))
+	tp.FckText(fmt.Sprintf("Логгер | Открытие файла: %s",fFunc),err)
+	fFunc.Write(raw)
+	fFunc.Close()
+}
+```
 ## License
 
 This project is under Apache v2 License. See the [LICENSE](LICENSE) file for the full license text.
