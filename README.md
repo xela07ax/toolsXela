@@ -41,7 +41,8 @@ OLD Docs!!!
 		tp.ExitWithSecTimeout(1)
 		}
 // Запускаем логер
-	logEr := chLogger.NewChLoger(FullLogPath,300)
+	d2 := 300* time.Millisecond // интервал
+	logEr := chLogger.NewChLoger(FullLogPath,&d2)
 	logEr.RunMinion()
 	logEr.ChInLog <- [4]string{"Welcome","nil",fmt.Sprintf("Вас приветствует \"Бот Контроллер\" v1.1 (091219) \n")}
 	if err != nil {
