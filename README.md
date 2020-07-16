@@ -4,7 +4,7 @@ OLD Docs!!!
 Пакет ToolPack предназначен для упрощения рутинных задач в проектах написанных на языке Go!
 
 Он расширяется предоставляя все больше таких возможностей как Lodash, но для Golang.
-
+	}
 ## Возможности
 
 	Работа с архивами
@@ -25,11 +25,30 @@ OLD Docs!!!
 - OpenINIfile - открытие INI файлов, но нужно предварительно задать структуру
     OpenConf("file.ini", &cfg_struct)
 
-	Логирование
-- Logger - Предоставляет возможность вести логирование сразу в файл и в консоль
-	logger = new(tp.Logger) // Создаем объект в который будем передавать что логировать и его же передавать пакетам которые будут туда писать
-	logger.SetFilePath("log.txt") // Устанавливаем дирректорию до файла куда писать
-	logger.LogPrintln("@STARTING DOWNLOAD@", "Моя программа запишет тот текст в лог") //Пример строки для логирования, строка запишется в файл и выведется на экран
+# Логирование
+## Logger - Предоставляет возможность вести логирование сразу в файл и в консоль
+Создаем объект в который будем передавать что логировать и его же передавать пакетам которые будут туда писать
+
+```go
+// Получим текущую директорию
+	dir, err := tp.BinDir()
+	tp.Fck(err)
+// Создаем логер
+	FullLogPath := filepath.Join(dir,"log/")
+	err = tp.CheckMkdir(FullLogPath)
+	if err != nil {
+		fmt.Printf("Ошибка временной папки: %s | %s\n",FullLogPath,err)
+		tp.ExitWithSecTimeout(1)
+		}
+// Запускаем логер
+	d2 := 300* time.Millisecond // интервал
+	logEr := chLogger.NewChLoger(FullLogPath,&d2)
+	logEr.RunMinion()
+	logEr.ChInLog <- [4]string{"Welcome","nil",fmt.Sprintf("Вас приветствует \"Бот Контроллер\" v1.1 (091219) \n")}
+	if err != nil {
+		logEr.ChInLog <- [4]string{"Configurator","nil",fmt.Sprintf("Ошибка при открытии 32-битного ключа \".key\" %s: %s\n",configDir,err),"1"}
+	}
+```
 - Round - Округление float64
     f = tp.Round(5.867868, 2) //5.86
 - SaveStruct и LoadStruct - Сохранение и загрузка структуры из Json
