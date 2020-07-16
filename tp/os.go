@@ -11,6 +11,6 @@ func ExitWithSecTimeout(status int)  {
 	// 0 - norm
 	// 1 - error
 	fmt.Println("Завершение работы программы через 2 сек.")
-	time.Sleep(2*time.Second)
+	time.Sleep(500*time.Millisecond)
 	os.Exit(status)
 }

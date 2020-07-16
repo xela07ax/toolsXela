@@ -14,13 +14,13 @@ import (
 func Fck(err error) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %s", err)
-		os.Exit(1)
+		ExitWithSecTimeout(1)
 	}
 }
 func FckText(text string,err error) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR HEAD: %s\n ERROT TEXT: %s", text,err)
-		os.Exit(1)
+		ExitWithSecTimeout(1)
 	}
 }
 func DeleteFile(path string)error {
@@ -32,12 +32,11 @@ func DeleteFile(path string)error {
 	return nil
 }
 
-func isError(err error) bool {
+func IsError(err error) bool {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	return (err != nil)
+	return err != nil
 }
 
 func Getime()string  {
