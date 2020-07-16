@@ -1,7 +1,7 @@
 package chLogger
 
 import (
-	"../tp"
+	"github.com/xela07ax/toolsXela/tp"
 	"fmt"
 	"os"
 	"path/filepath"
