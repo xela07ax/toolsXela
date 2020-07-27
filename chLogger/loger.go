@@ -1,8 +1,8 @@
 package chLogger
 
 import (
-	"github.com/xela07ax/toolsXela/tp"
 	"fmt"
+	"github.com/xela07ax/toolsXela/tp"
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,13 +10,18 @@ import (
 	"time"
 )
 
-
+type Config struct {
+	IntervalMs int // интервал обновления
+	ConsolFilterFn map[string]int // map[funcName]mode
+	Mode int
+	Dir string // Папка для сохранений
+}
 
 type mutexErrors struct {
 	mu sync.Mutex
 	errEtls  map[string]error
 }
-func (c *mutexErrors) AddError(etlName string,err error)  {
+func (c *mutexErrors) AddError(etlName string,err error) {
 	c.mu.Lock()
 	c.errEtls[etlName] = err
 	c.mu.Unlock()
@@ -63,8 +68,8 @@ func (p *ChLoger) SignalStoper(prepareExit <-chan bool)  {
 }
 
 type ChLoger struct {
-	delay *time.Duration
-	logPath string
+	//logPath string
+	Options *Config
 	batchCnt *mutexCounter
 	process *mutexRunner
 	Errors *mutexErrors
@@ -74,16 +79,14 @@ type ChLoger struct {
 	GoodBy chan bool
 }
 
-func NewChLoger(logDir string, delay *time.Duration) *ChLoger {
+func NewChLoger(cfg *Config) *ChLoger {
 	time := tp.Getime()
 	time = strings.Replace(time, " ", "_", -1)
 	time = strings.Replace(time, ":", "", -1)
-	logPath := filepath.Join(logDir,time)
-	err := tp.CheckMkdir(logPath)
-	tp.FckText(fmt.Sprintf("Создание папки логов: %s",logPath),err)
+	tp.FckText(fmt.Sprintf("Создание папки логов: %s",cfg.Dir),tp.CheckMkdir(cfg.Dir))
 	merr := new(mutexErrors)
 	merr.errEtls = make(map[string]error)
-	return &ChLoger{delay:delay,ChInLog:make(chan [4]string,100),logPath:logPath,stopPrepare:new(mutexStopper),process:new(mutexRunner),stopX:make(chan bool,1000),batchCnt:new(mutexCounter),GoodBy:make(chan bool),Errors:merr}
+	return &ChLoger{Options:cfg,ChInLog:make(chan [4]string,100),stopPrepare:new(mutexStopper),process:new(mutexRunner),stopX:make(chan bool,1000),batchCnt:new(mutexCounter),GoodBy:make(chan bool),Errors:merr}
 }
 
 type mutexRunner struct {
@@ -141,6 +144,7 @@ func (c *ChLoger) GetCountPackage()(cnt int)   {
 
 func (p *ChLoger) runMinion(gopher int)  {
 	// Загрузка будет проходить в папку с датой //
+	var gg time.Duration = time.Duration(p.Options.IntervalMs)*time.Millisecond
 	for {
 		select {
 		case elem := <-p.ChInLog:
@@ -152,21 +156,26 @@ func (p *ChLoger) runMinion(gopher int)  {
 		}
 
 			//fmt.Println(elem[len(elem[2])-2:])
-			etlFlush =fmt.Sprintf("%s | FUNC: %s | TEXT: %s\n",tp.Getime(),elem[0],elem[2])
-				funcFlush =fmt.Sprintf("%s | FUNC:%s | UNIT: %s | TEXT: %s\n",tp.Getime(),elem[0],elem[1],elem[2])
-
-
-			if elem[1] != "nil"{ // Если юнит не задан
+			// Посмотрим есть ли эта функция в правилах
+			if val, ok := p.Options.ConsolFilterFn[elem[0]]; ok {
+				// Если режим совпадает, то печатаем  или скрываем
+				if p.Options.Mode != val {
+					continue
+				}
+			}
+			etlFlush = fmt.Sprintf("%s | FUNC: %s | TEXT: %s\n",tp.Getime(),elem[0],elem[2])
+			funcFlush =fmt.Sprintf("%s | FUNC:%s | UNIT: %s | TEXT: %s\n",tp.Getime(),elem[0],elem[1],elem[2])
+			if elem[1] != "nil" { // Если юнит не задан
 				fileEtl := fmt.Sprintf("%s.txt",elem[1])
-				fEtl, err := tp.OpenWriteFile(filepath.Join(p.logPath,fileEtl))
+				fEtl, err := tp.OpenWriteFile(filepath.Join(p.Options.Dir,fileEtl))
 				tp.FckText(fmt.Sprintf("Логгер | Открытие файла: %s",fileEtl),err)
 				fEtl.Write([]byte(etlFlush))
 				fEtl.Close()
 			}
-			if elem[3] == "1"{ // Если ошибка
+			if elem[3] == "1" { // Если ошибка
 				errFlush := fmt.Sprintf("%s | UNIT: %s | FUNC: %s | TEXT: %s\n",tp.Getime(),elem[1],elem[0],elem[2])
 				fileEtl := fmt.Sprintf("%s.txt","Errors")
-				fEtl, err := tp.OpenWriteFile(filepath.Join(p.logPath,fileEtl))
+				fEtl, err := tp.OpenWriteFile(filepath.Join(p.Options.Dir,fileEtl))
 				tp.FckText(fmt.Sprintf("Логгер | Открытие файла: %s",fileEtl),err)
 				fmt.Fprintf(os.Stderr, errFlush)
 				fEtl.Write([]byte(errFlush))
@@ -175,7 +184,7 @@ func (p *ChLoger) runMinion(gopher int)  {
 				fmt.Print(funcFlush)
 			}
 			fileFunc := fmt.Sprintf("%s.txt",elem[0])
-			fFunc, err := tp.OpenWriteFile(filepath.Join(p.logPath,fileFunc))
+			fFunc, err := tp.OpenWriteFile(filepath.Join(p.Options.Dir,fileFunc))
 			tp.FckText(fmt.Sprintf("Логгер | Открытие файла: %s",fileFunc),err)
 			fFunc.Write([]byte(funcFlush))
 			fFunc.Close()
@@ -187,7 +196,7 @@ func (p *ChLoger) runMinion(gopher int)  {
 					return
 				}
 			}
-			time.Sleep(*p.delay*time.Millisecond)
+			time.Sleep(gg)
 		}
 	}
 }
