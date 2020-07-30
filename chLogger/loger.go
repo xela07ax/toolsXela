@@ -13,6 +13,7 @@ import (
 type Config struct {
 	IntervalMs int // интервал обновления
 	ConsolFilterFn map[string]int // map[funcName]mode
+	ConsolFilterUn map[string]int // map[unitName]mode
 	Mode int
 	Dir string // Папка для сохранений
 }
@@ -158,6 +159,13 @@ func (p *ChLoger) runMinion(gopher int)  {
 			//fmt.Println(elem[len(elem[2])-2:])
 			// Посмотрим есть ли эта функция в правилах
 			if val, ok := p.Options.ConsolFilterFn[elem[0]]; ok {
+				// Если режим совпадает, то печатаем  или скрываем
+				if p.Options.Mode != val {
+					continue
+				}
+			}
+			// Посмотрим есть ли этот юнит в правилах
+			if val, ok := p.Options.ConsolFilterUn[elem[1]]; ok {
 				// Если режим совпадает, то печатаем  или скрываем
 				if p.Options.Mode != val {
 					continue

@@ -41,7 +41,8 @@ func main() {
 
 	logEr.ChInLog <- [4]string{"Main","nil",fmt.Sprintf("Тестовое сообщение")}
 	logEr.ChInLog <- [4]string{"nagi","nil",fmt.Sprintf("Тестовое сообщение1")}
-	logEr.ChInLog <- [4]string{"republic","nil",fmt.Sprintf("Тестовое сообщение2")}
+	logEr.ChInLog <- [4]string{"nagi","unit1",fmt.Sprintf("Тестовое сообщение2")}
+	logEr.ChInLog <- [4]string{"republic","nil",fmt.Sprintf("Тестовое сообщение3")}
 	time.Sleep(1*time.Second) //Для того, что бы в консоле не перемешались тексты выводв, добавим небольшую паузу
 	fmt.Println("Всем спасибо за внимание")
 }

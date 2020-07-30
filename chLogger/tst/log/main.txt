@@ -3,3 +3,6 @@
 2020-07-27 23:41:04 | FUNC:Main | UNIT: republic | TEXT: Тестовое сообщение1
 2020-07-27 23:41:04 | FUNC:Main | UNIT: nagi | TEXT: Тестовое сообщение2
 2020-07-27 23:41:50 | FUNC:Main | UNIT: nil | TEXT: Тестовое сообщение
+2020-07-29 20:44:28 | FUNC:Main | UNIT: nil | TEXT: Тестовое сообщение
+2020-07-30 13:24:55 | FUNC:Main | UNIT: nil | TEXT: Тестовое сообщение
+2020-07-30 13:33:32 | FUNC:Main | UNIT: nil | TEXT: Тестовое сообщение
