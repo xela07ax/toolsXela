@@ -163,12 +163,12 @@ func (p *ChLoger) runMinion(gopher int)  {
 				if p.Options.Mode != val {
 					continue
 				}
-			}
-			// Посмотрим есть ли этот юнит в правилах
-			if val, ok := p.Options.ConsolFilterUn[elem[1]]; ok {
-				// Если режим совпадает, то печатаем  или скрываем
-				if p.Options.Mode != val {
-					continue
+				// Посмотрим есть ли этот юнит в правилах
+				if val, ok := p.Options.ConsolFilterUn[elem[1]]; ok {
+					// Если режим совпадает, то печатаем  или скрываем
+					if p.Options.Mode != val {
+						continue
+					}
 				}
 			}
 			etlFlush = fmt.Sprintf("%s | FUNC: %s | TEXT: %s\n",tp.Getime(),elem[0],elem[2])
