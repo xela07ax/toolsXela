@@ -33,21 +33,17 @@ OLD Docs!!!
 // Получим текущую директорию
 	dir, err := tp.BinDir()
 	tp.Fck(err)
-// Создаем логер
-	FullLogPath := filepath.Join(dir,"log/")
-	err = tp.CheckMkdir(FullLogPath)
-	if err != nil {
-		fmt.Printf("Ошибка временной папки: %s | %s\n",FullLogPath,err)
-		tp.ExitWithSecTimeout(1)
-		}
 // Запускаем логер
-	d2 := 300* time.Millisecond // интервал
-	logEr := chLogger.NewChLoger(FullLogPath,&d2)
+	logEr := chLogger.NewChLoger(&chLogger.Config{
+		IntervalMs:     300,
+		ConsolFilterFn: map[string]int{"Front Http Server":  0},
+		ConsolFilterUn: map[string]int{"Pooling": 1},
+		Mode:           0,
+		Dir:            dir,
+	})
 	logEr.RunMinion()
-	logEr.ChInLog <- [4]string{"Welcome","nil",fmt.Sprintf("Вас приветствует \"Бот Контроллер\" v1.1 (091219) \n")}
-	if err != nil {
-		logEr.ChInLog <- [4]string{"Configurator","nil",fmt.Sprintf("Ошибка при открытии 32-битного ключа \".key\" %s: %s\n",configDir,err),"1"}
-	}
+	logEr.ChInLog <- [4]string{"Welcome","nil",fmt.Sprintf("Вас приветствует \"Silika-FileManager Контроллер\" v1.1 (11112020) \n")}
+
 ```
 - Round - Округление float64
     f = tp.Round(5.867868, 2) //5.86
