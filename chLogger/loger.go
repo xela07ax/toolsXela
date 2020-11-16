@@ -16,6 +16,7 @@ type Config struct {
 	ConsolFilterUn map[string]int // map[unitName]mode
 	Mode int
 	Dir string // Папка для сохранений
+	Broadcast chan <- []byte
 }
 
 type mutexErrors struct {
@@ -177,6 +178,9 @@ func (p *ChLoger) runMinion(gopher int)  {
 				fileEtl := fmt.Sprintf("%s.txt",elem[1])
 				fEtl, err := tp.OpenWriteFile(filepath.Join(p.Options.Dir,fileEtl))
 				tp.FckText(fmt.Sprintf("Логгер | Открытие файла: %s",fileEtl),err)
+				if p.Options.Broadcast != nil {
+					p.Options.Broadcast <- []byte(etlFlush)
+				}
 				fEtl.Write([]byte(etlFlush))
 				fEtl.Close()
 			}
@@ -186,10 +190,16 @@ func (p *ChLoger) runMinion(gopher int)  {
 				fEtl, err := tp.OpenWriteFile(filepath.Join(p.Options.Dir,fileEtl))
 				tp.FckText(fmt.Sprintf("Логгер | Открытие файла: %s",fileEtl),err)
 				fmt.Fprintf(os.Stderr, errFlush)
+				if p.Options.Broadcast != nil {
+					p.Options.Broadcast <- []byte(errFlush)
+				}
 				fEtl.Write([]byte(errFlush))
 				fEtl.Close()
 			} else {
 				fmt.Print(funcFlush)
+				if p.Options.Broadcast != nil {
+					p.Options.Broadcast <- []byte(funcFlush)
+				}
 			}
 			fileFunc := fmt.Sprintf("%s.txt",elem[0])
 			fFunc, err := tp.OpenWriteFile(filepath.Join(p.Options.Dir,fileFunc))
