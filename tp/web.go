@@ -23,7 +23,7 @@ func Httpjson(w http.ResponseWriter, r *http.Request, res interface{}) (err erro
 func HttpReadBody(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return []byte, err
+		return []byte{}, err
 	}
 	return b, nil
 }
