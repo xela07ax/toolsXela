@@ -3,7 +3,7 @@ package ttp
 import (
 	"fmt"
 	"net"
-	"../noRegx101"
+	"github.com/xela07ax/toolsXela/noRegx101"
 	"strings"
 )
 
