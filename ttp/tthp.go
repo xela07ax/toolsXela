@@ -1,4 +1,4 @@
-package hulyttp
+package ttp
 
 import (
 	"github.com/xela07ax/toolsXela/tp"

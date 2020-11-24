@@ -1,4 +1,4 @@
-package myNet
+package ttp
 
 import (
 	"fmt"
