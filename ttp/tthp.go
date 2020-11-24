@@ -1,7 +1,6 @@
 package ttp
 
 import (
-	"github.com/xela07ax/toolsXela/tp"
 	"net/http"
 )
 
@@ -20,5 +19,5 @@ func Resp (w http.ResponseWriter, r *http.Request, funcName string,text string, 
 		Status:   status,
 		Show:     show,
 	}
-	tp.Httpjson(w, r, Notify)
+	Httpjson(w, r, Notify)
 }
