@@ -1,5 +1,39 @@
 # archiver [![archiver GoDoc](https://img.shields.io/badge/reference-godoc-blue.svg?style=flat-square)](https://pkg.go.dev/github.com/mholt/archiver?tab=doc) <a href="https://dev.azure.com/mholt-dev/Archiver/_build"><img src="https://img.shields.io/azure-devops/build/mholt-dev/1e14e7f7-f929-4fec-a1db-fa5a3c0d4ca9/2/master.svg?label=cross-platform%20tests&style=flat-square"></a>
 
+Пример реализации архива Writer-ом и файлом.  
+`go modules` должны быть активны для примера
+```go
+package main
+import (
+	"bytes"
+	"compress/flate"
+	"fmt"
+	"github.com/xela07ax/toolsXela/archiver"
+	"github.com/xela07ax/toolsXela/tp"
+)
+
+func main()  {
+	ts, _ := tp.BinDir()
+	fmt.Printf("Bit: %s\n", ts)
+	archiver.Print()
+	z := archiver.Zip{
+		CompressionLevel:       flate.DefaultCompression,
+		MkdirAll:               true,
+		SelectiveCompression:   true,
+		ContinueOnError:        false,
+		OverwriteExisting:      false,
+		ImplicitTopLevelFolder: false,  //Неявная папка верхнего уровня
+	}
+	//err := z.Archive([]string{"D:\\Projects\\toolsXela\\toolsXela\\arch2"}, "test.zip")
+	var b bytes.Buffer // A Buffer needs no initialization.
+	err := z.ArchiveWriter([]string{"D:\\Projects\\toolsXela\\toolsXela\\arch2"}, &b)
+	f, err := tp.CreateOpenFile("tx.zip")
+		//b.WriteTo(os.Stdout)
+		b.WriteTo(f)
+	fmt.Println(err)
+}
+```
+
 Introducing **Archiver 3.1** - a cross-platform, multi-format archive utility and Go library. A powerful and flexible library meets an elegant CLI in this generic replacement for several platform-specific or format-specific archive utilities.
 
 ## Features

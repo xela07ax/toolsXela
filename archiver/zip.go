@@ -33,6 +33,30 @@ const (
 	XZ      ZipCompressionMethod = 95
 )
 
+func Print()  {
+	fmt.Println("This is Archiver")
+}
+func (z *Zip) ArchiveWriter(sources []string, w io.Writer) error {
+	err := z.Create(w)
+	if err != nil {
+		return fmt.Errorf("creating zip: %v", err)
+	}
+	defer z.Close()
+	destination := ""
+	var topLevelFolder string
+	if z.ImplicitTopLevelFolder && multipleTopLevels(sources) {
+		topLevelFolder = folderNameFromFileName(destination)
+	}
+	fmt.Printf("TTX:writeWalk|%v|%s|%s\n",sources, topLevelFolder, destination)
+	for _, source := range sources {
+		err := z.writeWalk(source, topLevelFolder, destination)
+		if err != nil {
+			return fmt.Errorf("walking %s: %v", source, err)
+		}
+	}
+
+	return nil
+}
 // Zip provides facilities for operating ZIP archives.
 // See https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT.
 type Zip struct {
