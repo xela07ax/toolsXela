@@ -57,6 +57,52 @@ func (z *Zip) ArchiveWriter(sources []string, w io.Writer) error {
 
 	return nil
 }
+
+
+func (z *Zip) UnarchReader(s io.Reader, sz int,destination string) error {
+	if !fileExists(destination) && z.MkdirAll {
+		err := mkdir(destination, 0755)
+		if err != nil {
+			return fmt.Errorf("preparing destination: %v", err)
+		}
+	}
+
+	err := z.Open(s, int64(sz))
+	if err != nil {
+		return fmt.Errorf("opening zip archive for reading: %v", err)
+	}
+	defer z.Close()
+
+	// if the files in the archive do not all share a common
+	// root, then make sure we extract to a single subfolder
+	// rather than potentially littering the destination...
+	if z.ImplicitTopLevelFolder {
+		files := make([]string, len(z.zr.File))
+		for i := range z.zr.File {
+			files[i] = z.zr.File[i].Name
+		}
+		if multipleTopLevels(files) {
+			destination = filepath.Join(destination, folderNameFromFileName("readerIo"))
+		}
+	}
+
+	for {
+		err := z.extractNext(destination)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			if z.ContinueOnError || IsIllegalPathError(err) {
+				log.Printf("[ERROR] Reading file in zip archive: %v", err)
+				continue
+			}
+			return fmt.Errorf("reading file in zip archive: %v", err)
+		}
+	}
+
+	return nil
+}
+
 // Zip provides facilities for operating ZIP archives.
 // See https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT.
 type Zip struct {
