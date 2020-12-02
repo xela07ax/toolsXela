@@ -6,6 +6,7 @@ require (
 	github.com/andybalholm/brotli v1.0.1
 	github.com/dsnet/compress v0.0.1
 	github.com/golang/snappy v0.0.2
+	github.com/gorilla/websocket v1.4.2
 	github.com/klauspost/compress v1.11.3
 	github.com/klauspost/pgzip v1.2.5
 	github.com/nwaples/rardecode v1.1.0
