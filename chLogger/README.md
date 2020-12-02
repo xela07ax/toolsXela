@@ -117,7 +117,6 @@ func main()  {
 	// 1. Настройка хаба для клиентов
 	flag.Parse()
 	fmt.Println(*addr)
-	fmt.Println("-main->start[newHub]")
 	hubib := hub.NewHub(false)
 	go hubib.Run()
 
@@ -133,12 +132,8 @@ func main()  {
 		// serveWs(hubib, w, r)
 	})
 	go http.ListenAndServe(*addr, nil)
-	//if err != nil {
-	//	log.Fatal("ListenAndServe: ", err)
-	//}
 
 	// 2.  Настройка логера
-	fmt.Println("-main->end[Настройка логера]")
 	time.Sleep(500*time.Millisecond)
 	logEr := chLogger.NewChLoger(&chLogger.Config{
 		IntervalMs:     300,
@@ -173,24 +168,18 @@ func main()  {
 		}
 
 	}()
-
-	fmt.Println("-main->end[RunMinion]")
-	//fmt.Println("-main->start[hub.run]-p2")
 	time.Sleep(5*time.Second)
-	fmt.Println("-main->end[newHub]")
 	logEr.ChInLog <- [4]string{"Welcome","nil",fmt.Sprintf("Вас приветствует \"Silika-FileManager Контроллер\" v1.1 (11112020) \n")}
-	fmt.Println("-main->wait")
 	time.Sleep(5*time.Second)
-	fmt.Println("-main->end[newHub]")
 	logEr.ChInLog <- [4]string{"Welcome","nil",fmt.Sprintf("Вас приветствует \"Silika-FileManager Контроллер\" v1.1 (11112020) \n")}
-	fmt.Println("-main->wait")
 	time.Sleep(5*time.Second)
-	fmt.Println("-main->end[newHub]")
 	logEr.ChInLog <- [4]string{"Welcome","nil",fmt.Sprintf("Вас приветствует \"Silika-FileManager Контроллер\" v1.1 (11112020) \n")}
-	fmt.Println("-main->wait")
 	time.Sleep(1*time.Second)
+}
 }
 ```
 
 Демонстрация
 [![Demo docker api Xela golang](./tst/logerWsWepPage-2.gif)](./tst/logerWsWepPage-2.mp4)
+
+В примере видно как отправленная структура распозналась, а все остальное игноррировалось

@@ -119,8 +119,8 @@ func (c *Client) writePump() {
 		case message, ok := <-c.send:
 			c.hub.Logx(fmt.Sprintf("-Client.writePump->for-message[%s]",message))
 			c.hub.WebSocketOutput <- message
-			log.Printf("msg:%s\n",message)
-			time.Sleep(1*time.Second)
+			//log.Printf("msg:%s\n",message)
+			//time.Sleep(1*time.Second)
 			//continue
 
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
