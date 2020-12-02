@@ -50,7 +50,24 @@ type Client struct {
 	// Buffered channel of outbound messages.
 	send chan []byte
 }
+// serveWs handles websocket requests from the peer.
+func (h *Hub) ServeWs(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	h.Logx("-serveWs->init")
+	client := &Client{hub: h, conn: conn, send: make(chan []byte, 256)}
 
+	client.hub.register <- client
+
+	// Разрешить сбор памяти, на которую ссылается вызывающий абонент, выполнив всю работу в
+	// новых goroutines.
+	go client.writePump()
+	go client.readPump()
+	h.Logx("-serveWs->init-end")
+}
 // readPump pumps messages from the websocket connection to the hub.
 //
 // The application runs readPump in a per-connection goroutine. The application
