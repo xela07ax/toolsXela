@@ -49,6 +49,7 @@ type Client struct {
 
 	// Buffered channel of outbound messages.
 	send chan []byte
+
 }
 // serveWs handles websocket requests from the peer.
 func (h *Hub) ServeWs(w http.ResponseWriter, r *http.Request) {
@@ -117,7 +118,11 @@ func (c *Client) writePump() {
 		select {
 		case message, ok := <-c.send:
 			c.hub.Logx(fmt.Sprintf("-Client.writePump->for-message[%s]",message))
-			log.Printf("msg:%s",message)
+			c.hub.WebSocketOutput <- message
+			log.Printf("msg:%s\n",message)
+			time.Sleep(1*time.Second)
+			//continue
+
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				// The hub closed the channel.

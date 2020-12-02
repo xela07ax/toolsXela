@@ -22,18 +22,21 @@ type Hub struct {
 	// Отмените регистрацию запросов от клиентов.
 	unregister chan *Client
 	Debug bool
+	WebSocketOutput chan []byte
 }
 
 func NewHub(debug bool) *Hub {
 	return &Hub{
 		broadcast:  make(chan []byte),
-		Input:      make(chan []byte,100),
+		Input:      make(chan []byte,100), // Отправляем клиентам подключившихся по вэбсокетам
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
 		clients:    make(map[*Client]bool),
 		Debug: 		debug,
+		WebSocketOutput: make(chan []byte,100),
 	}
 }
+
 
 func (h *Hub) Run() {
 		h.Logx("-hub.run->init")

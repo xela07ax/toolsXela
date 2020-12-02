@@ -2,6 +2,7 @@ package main
 
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/xela07ax/toolsXela/chLogger"
@@ -48,6 +49,30 @@ func main()  {
 		Broadcast: hubib.Input,
 	})
 	logEr.RunMinion()
+	// 3. Настройка обработчика входящих сообщений
+	// канал для приема <- hubib.WebSocketOutput
+	type Notyfy struct {
+		Name string
+		Text string
+		Data []byte
+	}
+// {"Name":"Run","Text":"Проект запуск"}
+	go func() {
+		for {
+			msg := <- hubib.WebSocketOutput
+			//fmt.Printf("%s",msg)
+			// Проблема в том, что отправленное сообщение немедленно возвращается
+			// А потому надо принимать только команды, будем парсить формат
+			// Сюда должна прийти структура новой команды, или игноррируем
+			var command Notyfy
+			err := json.Unmarshal(msg, &command)
+			if err != nil {
+				continue
+			}
+			logEr.ChInLog <- [4]string{"Anonimouse","nil",fmt.Sprintf("%s",msg)}
+		}
+
+	}()
 
 	fmt.Println("-main->end[RunMinion]")
 	//fmt.Println("-main->start[hub.run]-p2")
