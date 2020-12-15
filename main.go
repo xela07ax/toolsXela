@@ -43,23 +43,51 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 var homeTemplate = template.Must(template.New("").Parse(`
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-  </head>
-  <body>
-    <form
-      enctype="multipart/form-data"
-      action="http://{{.}}/upload"
-      method="post"
-    >
-      <input type="file" name="myFile" />
-      <input type="submit" value="upload" />
-    </form>
-  </body>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Upload Files</title>
+</head>
+<body>
+    <h2>File Upload</h2>
+    Select file
+    <input type="file" id="filename" />
+    <br>
+    <input type="button" value="Connect" onclick="connectChatServer()" />
+    <br>
+    <input type="button" value="Upload" onclick="sendFile()" />
+    <script>
+        var ws;
+        function connectChatServer() {
+            ws = new WebSocket("ws://{{.}}/common");
+            ws.binaryType = "arraybuffer";
+            ws.onopen = function() {
+                alert("Connected.")
+            };
+            ws.onmessage = function(evt) {
+                alert(evt.msg);
+            };
+            ws.onclose = function() {
+                alert("Connection is closed...");
+            };
+            ws.onerror = function(e) {
+                alert(e.msg);
+            }
+        }
+        function sendFile() {
+            var file = document.getElementById('filename').files[0];
+            var reader = new FileReader();
+            var rawData = new ArrayBuffer();
+            reader.loadend = function() {
+            }
+            reader.onload = function(e) {
+                rawData = e.target.result;
+                ws.send(rawData);
+                alert("the File has been transferred.")
+            }
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
 </html>
 `))

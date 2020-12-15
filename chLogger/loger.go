@@ -178,9 +178,6 @@ func (p *ChLoger) runMinion(gopher int)  {
 				fileEtl := fmt.Sprintf("%s.txt",elem[1])
 				fEtl, err := tp.OpenWriteFile(filepath.Join(p.Options.Dir,fileEtl))
 				tp.FckText(fmt.Sprintf("Логгер | Открытие файла: %s",fileEtl),err)
-				if p.Options.Broadcast != nil {
-					p.Options.Broadcast <- []byte(etlFlush)
-				}
 				fEtl.Write([]byte(etlFlush))
 				fEtl.Close()
 			}
@@ -191,14 +188,14 @@ func (p *ChLoger) runMinion(gopher int)  {
 				tp.FckText(fmt.Sprintf("Логгер | Открытие файла: %s",fileEtl),err)
 				fmt.Fprintf(os.Stderr, errFlush)
 				if p.Options.Broadcast != nil {
-					p.Options.Broadcast <- []byte(errFlush)
+					p.Options.Broadcast <- []byte(fmt.Sprintf("***ERRX*** %s",errFlush))
 				}
 				fEtl.Write([]byte(errFlush))
 				fEtl.Close()
 			} else {
 				fmt.Print(funcFlush)
 				if p.Options.Broadcast != nil {
-					p.Options.Broadcast <- []byte(funcFlush)
+					p.Options.Broadcast <- []byte(fmt.Sprintf("***OKAY*** %s",funcFlush))
 				}
 			}
 			fileFunc := fmt.Sprintf("%s.txt",elem[0])
