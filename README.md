@@ -1,17 +1,8 @@
-ToolPack v2
+ToolPack v2 ToolsXela
 ===
-OLD Docs!!!
+
 Пакет ToolPack предназначен для упрощения рутинных задач в проектах написанных на языке Go!
-
-Он расширяется предоставляя все больше таких возможностей как Lodash, но для Golang.
-	}
 ## Возможности
-
-	Работа с архивами
-- ZipFiles и Unzip - для архивирования и разархивирование файлов в формате ZIP
-    files := []string{"example.csv", "data.csv"}
-    err := ZipFiles("done.zip", files)
-
 	Работа с файлами
 - WriteFile - Запись байтов в файл
 - CheckExistsFile - Проверка файла на существование

@@ -145,8 +145,7 @@ func (c *ChLoger) GetCountPackage()(cnt int)   {
 //[3] - Тип "error","ok"
 
 func (p *ChLoger) runMinion(gopher int)  {
-	// Загрузка будет проходить в папку с датой //
-	var gg time.Duration = time.Duration(p.Options.IntervalMs)*time.Millisecond
+    ticker := time.NewTicker(time.Duration(p.Options.IntervalMs) * time.Millisecond)
 	for {
 		select {
 		case elem := <-p.ChInLog:
@@ -204,14 +203,13 @@ func (p *ChLoger) runMinion(gopher int)  {
 			fFunc.Write([]byte(funcFlush))
 			fFunc.Close()
 
-		default:
+		case <-ticker.C:
 			if p.stopPrepare.x {
 				if len(p.ChInLog) == 0 {
 					p.stopX <- true
 					return
 				}
 			}
-			time.Sleep(gg)
 		}
 	}
 }

@@ -1,8 +1,9 @@
-# HulyTTP - Huly ty tut polzaesh
+# HulyTTP - Ty Tut Polzaesh
 ## Http инструменты
 
-- Resp  
-Возвращаем rest ответ в стандартизированном варианте Notify
+- Возвращаем rest (json) ответ в стандартизированном варианте (js.vue.Quasar.Notify)  
+- Приемник файлов
+
 #### Пример
 ```go
 import "github.com/xela07ax/toolsXela/hulyttp"

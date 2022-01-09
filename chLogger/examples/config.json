@@ -1,0 +1,7 @@
+{
+  "IntervalMs": 300,
+  "ConsolFilterFn": {"nagi": 0, "republic": 1, "Da": 0},
+  "ConsolFilterUn": {"unit1": 1},
+  "Mode": 0,
+  "Dir": "log"
+}

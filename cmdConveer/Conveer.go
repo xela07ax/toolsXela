@@ -115,7 +115,6 @@ func (p *Box) RunMinion()  {
 	// Миньон может быть еще не создан, но работа над этим идет
 	return
 }
-// Область для безопасного открытия миньюна заканчивается
 
 // Все самое интересное начинается тут
 func (p *Box) minion(gophere int)  {
@@ -123,8 +122,8 @@ func (p *Box) minion(gophere int)  {
 	/*
 	Какой то код, который нужно выполнить до того как начнется сам процесс считывания данных со входящкго канала
 	 */
+    ticker := time.NewTicker(time.Duration(1000) * time.Millisecond)
 
-loop:
 	for  { // Начинается тело сканирования каналов, из цикла выходить не планируем, завершение цикла будет завершение функции
 		select { // Смотрим в какие каналы пришли данные и считываем с него
 		case elem := <-p.ch: // Канал данных, с которыми нужно проводить какие то операции, к примеру строки или уже обработаные другим конвеером строки
@@ -157,35 +156,32 @@ loop:
 			// Start a timer
 			timeout := time.After(elem.Timeout * time.Second)
 
-			// The select statement allows us to execute based on which channel
-			// we get a message from first.
 			select {
 			case <-timeout:
 				// Timeout happened first, kill the process and print a message.
 				err := cmd.Process.Kill()
 				p.loger<- [4]string{"Conveer","nil",fmt.Sprintf("Экзекутер приостановлен по таймаюту, пробуем еще раз. Статус завершения: %v",err),"1"}
 				p.OutCh <- Reject{Name:elem.Name,Status:1,MyStderr:bufErr.String(),MyStdout:buf.String(),Comment:"Timeout",Command:elem}
-				continue loop
+				continue
 			case err := <-done:
 				//p.loger<- [4]string{"Conveer","nil",fmt.Sprintf("Статус завершения Экзекутера: %v",err)}
 				// Command completed before timeout. Print output and error if it exists.
 				//fmt.Println("Output:", buf.String())
 				if err != nil {
 					p.OutCh <- Reject{Name:elem.Name,Status:1,MyStderr:bufErr.String(),MyStdout:buf.String(),Comment:"Команда завершилась с ошибкой",Command:elem}
-					continue loop
+					continue
 				}
 				//fmt.Println("DDDDD")
 				//newElement := fmt.Sprintf("%s - ок!", elem) // к примеру первому элементу подставим "- ок"
 				p.OutCh <- Reject{Name:elem.Name,Status:0,MyStdout:buf.String(),Comment:"Команда выполнена",Command:elem} // Отправляем на вывод, новую строку. С ней может работать другой конвеер, который делает, что то другое
 			}
-		default: // Попадаем сюда когда нет работы, канал пуст и тут можем узнать, может пора закругляться
+		case <-ticker.C: // Попадаем сюда когда нет работы, канал пуст и тут можем узнать, может пора закругляться
 			if p.stopPrepare.x { // Функции сверху обрабатывают два типа сигнала, это по прихода из канала или просто вызов Stop, и они передают сюда true, значит нам пора выключаться
 				// Какой то интересный завершающий код
 				fmt.Printf("Завершаю работу, я это миньен %d, имя: %s\n",gophere,p.boxData) //Печатаем ход работ. И в тексте добавляем полезную информацию, о количестве завершеных им операций и порядковый номер миньона
 				p.stopX <- true // Посылаем сигнал, что миньон прибит
 				return // Собственно ей конец
 			}
-			time.Sleep(1*time.Second) // Это сделано, что бы лишний раз не дергать такт процессора на проверку, почему входной канал пуст, если пуст и умирать рано, подождем секундочку
 		}
 	}
 }

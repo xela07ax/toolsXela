@@ -1,1 +1,0 @@
-2020-07-27 21:47:46 | FUNC:Configurator | UNIT: nil | TEXT: Ошибка при открытии конфигурации D:\Projects\toolsXela\toolsXela\chLogger\config.json: open D:\Projects\toolsXela\toolsXela\chLogger\config.json: The system cannot find the file specified.
