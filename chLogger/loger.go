@@ -11,7 +11,6 @@ import (
 )
 
 type Config struct {
-	IntervalMs int // интервал обновления
 	ConsolFilterFn map[string]int // map[funcName]mode
 	ConsolFilterUn map[string]int // map[unitName]mode
 	Mode int
@@ -145,7 +144,7 @@ func (c *ChLoger) GetCountPackage()(cnt int)   {
 //[3] - Тип "error","ok"
 
 func (p *ChLoger) runMinion(gopher int)  {
-    ticker := time.NewTicker(time.Duration(p.Options.IntervalMs) * time.Millisecond)
+    ticker := time.NewTicker(2 * time.Second)
 	for {
 		select {
 		case elem := <-p.ChInLog:
