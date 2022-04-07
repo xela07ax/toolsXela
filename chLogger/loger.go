@@ -170,6 +170,7 @@ func (p *ChLoger) circle(gopher int) {
 		select {
 		case element := <-p.ChInLog:
 			p.exec(gopher, element)
+			time.Sleep(10*time.Microsecond) // сделаем микро-задержку, так как при очень быстрой работе логера, данные в stdout перемешиваются в кашу
 		case <-p.done:
 			if len(p.ChInLog) == 0 {
 				p.stopX <- true
